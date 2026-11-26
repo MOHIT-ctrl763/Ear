@@ -2,15 +2,10 @@ import React, { useEffect, useState } from 'react';
 import RockoLogo from './RockoLogo';
 
 /**
- * Luxury 5-style Preloader tailored for rocKo Haute Acoustics.
- * Supports variants: 'curtain' | 'counter' | 'split' | 'pulse' | 'shutter'.
+ * Custom Eye-Blink Preloader inspired by the segmented angular LED eyes
+ * on the uploaded earbuds case, styled for rocKo.
  */
-const Preloader = ({
-  variant = 'curtain',
-  duration = 1450,
-  subtitle = 'Haute Acoustics • Calibration',
-  onComplete,
-}) => {
+const Preloader = ({ duration = 1850, onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
   const [done, setDone] = useState(false);
@@ -22,7 +17,6 @@ const Preloader = ({
     const step = (now) => {
       const elapsed = now - start;
       const t = Math.min(1, elapsed / duration);
-      // Ease-out cubic for natural luxury deceleration
       const eased = 1 - Math.pow(1 - t, 3);
       setProgress(Math.round(eased * 100));
 
@@ -33,7 +27,7 @@ const Preloader = ({
         const timer = setTimeout(() => {
           setDone(true);
           if (onComplete) onComplete();
-        }, 700);
+        }, 650);
         return () => clearTimeout(timer);
       }
     };
@@ -44,118 +38,143 @@ const Preloader = ({
 
   if (done) return null;
 
-  const formattedCount = String(progress).padStart(3, '0');
+  return (
+    <div
+      className={`fixed inset-0 z-[9999] bg-[#0b0b0d] flex flex-col items-center justify-center px-6 transition-transform duration-700 ease-[cubic-bezier(0.77,0,0.175,1)] ${
+        exiting ? '-translate-y-full pointer-events-none' : 'translate-y-0'
+      }`}
+    >
+      {/* Keyframes for realistic segmented LED eye blink */}
+      <style>{`
+        @keyframes rocko-eye-blink {
+          0%, 14%, 24%, 64%, 74%, 100% {
+            transform: scaleY(1);
+            opacity: 1;
+          }
+          19%, 69% {
+            transform: scaleY(0.05);
+            opacity: 0.7;
+          }
+        }
+        @keyframes rocko-led-pulse {
+          0%, 100% {
+            filter: drop-shadow(0 0 8px rgba(225, 29, 29, 0.75));
+          }
+          50% {
+            filter: drop-shadow(0 0 18px rgba(225, 29, 29, 1));
+          }
+        }
+        .rocko-eye-lid {
+          transform-box: fill-box;
+          transform-origin: center;
+          animation: rocko-eye-blink 1.85s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .rocko-eye-glow {
+          animation: rocko-led-pulse 1.4s ease-in-out infinite;
+        }
+      `}</style>
 
-  // Variant 3: Split horizontal doors
-  if (variant === 'split') {
-    return (
-      <div className="fixed inset-0 z-[9999] pointer-events-none">
-        <div
-          className={`absolute top-0 left-0 right-0 h-1/2 bg-[#09090b] border-b border-[#e11d1d]/25 transition-transform duration-700 ease-[cubic-bezier(0.77,0,0.175,1)] ${
-            exiting ? '-translate-y-full' : 'translate-y-0'
-          }`}
-        />
-        <div
-          className={`absolute bottom-0 left-0 right-0 h-1/2 bg-[#09090b] border-t border-[#e11d1d]/25 transition-transform duration-700 ease-[cubic-bezier(0.77,0,0.175,1)] ${
-            exiting ? 'translate-y-full' : 'translate-y-0'
-          }`}
-        />
-        <div
-          className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-400 ${
-            exiting ? 'opacity-0' : 'opacity-100'
-          }`}
+      <div className="relative z-10 flex flex-col items-center text-center">
+        {/* Segmented Angular Earbud LED Eyes */}
+        <svg
+          viewBox="0 0 260 90"
+          className="w-56 sm:w-64 h-auto mb-6 rocko-eye-glow"
+          aria-hidden="true"
         >
-          <RockoLogo className="h-11 sm:h-14 w-auto" variant="light" />
-          <span className="mt-4 text-[10px] font-mono tracking-[0.35em] text-[#e11d1d] uppercase">
-            {formattedCount}%
-          </span>
-        </div>
-      </div>
-    );
-  }
+          <defs>
+            <clipPath id="left-eye-socket">
+              <path d="M 14 14 L 106 30 L 98 74 L 22 64 Z" />
+            </clipPath>
+            <clipPath id="right-eye-socket">
+              <path d="M 246 14 L 154 30 L 162 74 L 238 64 Z" />
+            </clipPath>
+          </defs>
 
-  // Variant 5: 5-column vertical architectural shutter blinds
-  if (variant === 'shutter') {
-    return (
-      <div className="fixed inset-0 z-[9999] flex pointer-events-none">
-        {[0, 1, 2, 3, 4].map((col) => (
-          <div
-            key={col}
-            style={{ transitionDelay: exiting ? `${col * 65}ms` : '0ms' }}
-            className={`flex-1 h-full bg-[#09090b] border-r border-white/[0.04] transition-transform duration-600 ease-[cubic-bezier(0.77,0,0.175,1)] ${
-              exiting ? '-translate-y-full' : 'translate-y-0'
-            }`}
+          {/* Left Eye Socket */}
+          <path
+            d="M 14 14 L 106 30 L 98 74 L 22 64 Z"
+            fill="#050507"
+            stroke="#27272a"
+            strokeWidth="2"
           />
-        ))}
-        <div
-          className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 ${
-            exiting ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
-          <RockoLogo className="h-11 sm:h-14 w-auto" variant="light" />
-          <div className="mt-5 w-44 h-[2px] bg-white/10 overflow-hidden rounded-full">
+          <g clipPath="url(#left-eye-socket)">
+            <g className="rocko-eye-lid">
+              {/* Outer segmented arc */}
+              <circle
+                cx="64"
+                cy="34"
+                r="24"
+                fill="none"
+                stroke="#e11d1d"
+                strokeWidth="7"
+                strokeDasharray="6 4"
+              />
+              {/* Inner segmented arc */}
+              <circle
+                cx="64"
+                cy="34"
+                r="13"
+                fill="none"
+                stroke="#f87171"
+                strokeWidth="4.5"
+                strokeDasharray="4 3"
+              />
+              {/* Core pupil */}
+              <circle cx="64" cy="34" r="4" fill="#ffffff" />
+            </g>
+          </g>
+
+          {/* Right Eye Socket */}
+          <path
+            d="M 246 14 L 154 30 L 162 74 L 238 64 Z"
+            fill="#050507"
+            stroke="#27272a"
+            strokeWidth="2"
+          />
+          <g clipPath="url(#right-eye-socket)">
+            <g className="rocko-eye-lid">
+              {/* Outer segmented arc */}
+              <circle
+                cx="196"
+                cy="34"
+                r="24"
+                fill="none"
+                stroke="#e11d1d"
+                strokeWidth="7"
+                strokeDasharray="6 4"
+              />
+              {/* Inner segmented arc */}
+              <circle
+                cx="196"
+                cy="34"
+                r="13"
+                fill="none"
+                stroke="#f87171"
+                strokeWidth="4.5"
+                strokeDasharray="4 3"
+              />
+              {/* Core pupil */}
+              <circle cx="196" cy="34" r="4" fill="#ffffff" />
+            </g>
+          </g>
+        </svg>
+
+        {/* Crisp Light-variant rocKo Logo (visible on dark preloader) */}
+        <RockoLogo className="h-10 sm:h-12 w-auto" variant="light" />
+
+        {/* Minimal Progress Bar */}
+        <div className="mt-6 w-48 sm:w-56">
+          <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1.5">
+            <span className="tracking-[0.22em] uppercase">Waking Audio</span>
+            <span className="text-white font-bold tabular-nums">{progress}%</span>
+          </div>
+          <div className="h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#e11d1d] via-[#e11d1d] to-[#f5f4f0]"
+              className="h-full bg-[#e11d1d] transition-all duration-75"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
-      </div>
-    );
-  }
-
-  // Variants: 'curtain' (default), 'counter', 'pulse'
-  return (
-    <div
-      className={`fixed inset-0 z-[9999] bg-[#09090b] flex flex-col items-center justify-center px-6 transition-all duration-700 ease-[cubic-bezier(0.77,0,0.175,1)] ${
-        variant === 'pulse'
-          ? exiting
-            ? 'opacity-0 scale-105 pointer-events-none'
-            : 'opacity-100 scale-100'
-          : exiting
-          ? '-translate-y-full pointer-events-none'
-          : 'translate-y-0'
-      }`}
-    >
-      {/* Ambient luxury glow */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-[460px] h-[460px] bg-gradient-to-tr from-[#e11d1d]/12 via-[#e11d1d]/10 to-cyan-500/10 rounded-full blur-[130px]" />
-      </div>
-
-      {/* Pulse variant concentric acoustic rings */}
-      {variant === 'pulse' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-52 h-52 rounded-full border border-[#e11d1d]/30 animate-ping" />
-          <div className="absolute w-72 h-72 rounded-full border border-[#e11d1d]/25 animate-pulse" />
-        </div>
-      )}
-
-      <div className="relative z-10 flex flex-col items-center text-center">
-        <RockoLogo className="h-12 sm:h-14 w-auto" />
-
-        <p className="mt-4 text-[10px] sm:text-[11px] font-mono tracking-[0.32em] text-[#e11d1d] uppercase">
-          {subtitle}
-        </p>
-
-        {variant === 'counter' ? (
-          <div className="mt-6 text-5xl sm:text-7xl font-black font-display tracking-tighter text-white tabular-nums">
-            {formattedCount}
-            <span className="text-[#e11d1d] text-2xl sm:text-3xl ml-1">%</span>
-          </div>
-        ) : (
-          <div className="mt-7 w-52 sm:w-64">
-            <div className="flex items-center justify-between text-[10px] font-mono text-gray-400 mb-2">
-              <span className="tracking-[0.22em] uppercase">Acoustic Stage</span>
-              <span className="text-[#f5f4f0] font-bold tabular-nums">{progress}%</span>
-            </div>
-            <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#e11d1d] via-[#e11d1d] to-[#f5f4f0] transition-all duration-75"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

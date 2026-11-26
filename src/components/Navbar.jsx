@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Search, User, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
@@ -14,6 +14,27 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const { cartCount } = useCart();
+  const closeTimerRef = useRef(null);
+
+  const openDropdown = (name) => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    setProductsDropdown(name === 'Products');
+    setSupportDropdown(name === 'Support');
+  };
+
+  const scheduleCloseDropdown = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => {
+      setProductsDropdown(false);
+      setSupportDropdown(false);
+    }, 160);
+  };
+
+  const closeAllDropdowns = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    setProductsDropdown(false);
+    setSupportDropdown(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 25);
@@ -76,33 +97,37 @@ const Navbar = () => {
                   <div 
                     key={link.name} 
                     className="relative"
-                    onMouseEnter={() => link.name === 'Products' ? setProductsDropdown(true) : setSupportDropdown(true)}
-                    onMouseLeave={() => link.name === 'Products' ? setProductsDropdown(false) : setSupportDropdown(false)}
+                    onMouseEnter={() => openDropdown(link.name)}
+                    onMouseLeave={scheduleCloseDropdown}
                   >
                     <Link
                       to={link.path}
-                      className="flex items-center gap-1.5 text-[12.5px] tracking-[0.12em] uppercase font-semibold text-zinc-600 hover:text-[#111113] transition-colors py-1 group"
+                      onClick={closeAllDropdowns}
+                      className="flex items-center gap-1.5 text-[12.5px] tracking-[0.12em] uppercase font-semibold text-zinc-600 hover:text-[#111113] transition-colors py-2 group"
                     >
                       <span>{link.name}</span>
                       <ChevronDown className="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" />
                     </Link>
 
                     {((link.name === 'Products' && productsDropdown) || (link.name === 'Support' && supportDropdown)) && (
-                      <div className="absolute top-full left-0 mt-2 w-64 py-2 bg-white border border-zinc-200 rounded-2xl shadow-xl z-50 animate-fade-in">
-                        {link.dropdownItems.map((item, idx) => (
-                          <Link
-                            key={idx}
-                            to={item.path}
-                            className="flex items-center justify-between px-4 py-2.5 text-xs text-zinc-700 hover:text-[#111113] hover:bg-zinc-50 transition-colors"
-                          >
-                            <span>{item.label}</span>
-                            {item.badge && (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-100 text-[#111113] border border-zinc-200 font-bold uppercase tracking-wider">
-                                {item.badge}
-                              </span>
-                            )}
-                          </Link>
-                        ))}
+                      <div className="absolute top-full left-0 pt-1.5 z-50">
+                        <div className="w-64 py-2 bg-white border border-zinc-200 rounded-2xl shadow-xl animate-fade-in">
+                          {link.dropdownItems.map((item, idx) => (
+                            <Link
+                              key={idx}
+                              to={item.path}
+                              onClick={closeAllDropdowns}
+                              className="flex items-center justify-between px-4 py-2.5 text-xs text-zinc-700 hover:text-[#111113] hover:bg-zinc-50 transition-colors"
+                            >
+                              <span>{item.label}</span>
+                              {item.badge && (
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-100 text-[#111113] border border-zinc-200 font-bold uppercase tracking-wider">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>

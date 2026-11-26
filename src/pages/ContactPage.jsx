@@ -88,7 +88,7 @@ const ContactPage = () => {
         </div>
 
         {/* Contact Form & Warranty Center */}
-        <div id="warranty" className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-20 text-left">
+        <div id="warranty" className="scroll-mt-28 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-20 text-left">
           
           <div className="lg:col-span-7 luxury-card p-6 sm:p-9 rounded-3xl">
             <h2 className="text-2xl font-black text-[#111113] mb-2 font-display">
@@ -138,7 +138,7 @@ const ContactPage = () => {
                     <option value="Acoustic Tuning Setup">Acoustic Tuning & EQ Advice</option>
                   </select>
                 </div>
-                <div>
+                <div id="tracking" className="scroll-mt-28">
                   <label className="block text-[10.5px] text-zinc-500 uppercase tracking-wider mb-1 font-semibold">Acquisition / Order ID (Optional)</label>
                   <input
                     type="text"
@@ -164,7 +164,7 @@ const ContactPage = () => {
 
               <button
                 type="submit"
-                className="btn-gold-sheen w-full py-4 px-6 rounded-full bg-gradient-to-r from-[#e11d1d] to-[#b91c1c] hover:from-[#f5f4f0] hover:to-[#e11d1d] text-black text-xs font-black tracking-widest uppercase transition-all shadow-xl shadow-[#e11d1d]/25"
+                className="w-full py-4 px-6 rounded-full bg-[#111113] hover:bg-[#e11d1d] text-white text-xs font-bold tracking-widest uppercase transition-colors cursor-pointer shadow-sm"
               >
                 Submit Concierge Inquiry
               </button>
@@ -179,7 +179,7 @@ const ContactPage = () => {
           </div>
 
           {/* Right FAQs */}
-          <div id="faq" className="lg:col-span-5 space-y-4">
+          <div id="faq" className="scroll-mt-28 lg:col-span-5 space-y-4">
             <h3 className="text-xl font-bold text-[#111113] mb-4 flex items-center gap-2 font-display">
               <HelpCircle className="w-5 h-5 text-[#e11d1d]" />
               <span>Atelier Concierge FAQs</span>

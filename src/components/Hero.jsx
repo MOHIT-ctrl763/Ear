@@ -138,7 +138,7 @@ const Hero = () => {
               </span>
             </div>
 
-            <h1 className="text-[50px] sm:text-[64px] md:text-[74px] lg:text-[80px] font-extrabold leading-[0.95] tracking-[-0.035em] text-[#111113] mb-5 font-display">
+            <h1 className="text-[48px] sm:text-[62px] md:text-[70px] lg:text-[76px] font-bold leading-[1.02] tracking-[-0.02em] text-[#111113] mb-5 font-display">
               <span className="block">Feel Every</span>
               <span className="block text-[#e11d1d]">Beat.</span>
             </h1>
